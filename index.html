@@ -25,7 +25,7 @@
 
   <script>
     let quotes = {};
-
+  
     fetch('golf_quotes.json')
       .then(response => response.json())
       .then(data => {
@@ -35,34 +35,78 @@
         document.getElementById("quoteDisplay").textContent = "Failed to load quotes.";
         console.error("Error loading quotes:", error);
       });
-
+  
     document.querySelectorAll('input[name="option"]').forEach((elem) => {
       elem.addEventListener("change", () => {
         document.getElementById("golferName").disabled = elem.value !== "golfer";
         document.getElementById("keyword").disabled = elem.value !== "keyword";
       });
     });
-
+  
     function generateQuote() {
       const option = document.querySelector('input[name="option"]:checked').value;
       const golfer = document.getElementById("golferName").value.trim().toLowerCase();
       const keyword = document.getElementById("keyword").value.trim().toLowerCase();
       let filtered = Object.values(quotes);
-
+  
       if (option === "golfer") {
         filtered = filtered.filter(q => q.toLowerCase().startsWith(golfer + ":"));
       } else if (option === "keyword") {
         filtered = filtered.filter(q => q.toLowerCase().includes(keyword));
       }
-
+  
       const display = document.getElementById("quoteDisplay");
       if (filtered.length > 0) {
-        const randomQuote = filtered[Math.floor(Math.random() * filtered.length)];
-        display.textContent = randomQuote;
+        display.textContent = filtered[Math.floor(Math.random() * filtered.length)];
       } else {
         display.textContent = "No matching quotes found.";
       }
     }
+  
+    // Reusable logic for test runner
+    function runQuoteTest(data, option, input = '') {
+      let filtered = Object.values(data);
+  
+      if (option === "golfer") {
+        filtered = filtered.filter(q => q.toLowerCase().startsWith(input.toLowerCase() + ":"));
+      } else if (option === "keyword") {
+        filtered = filtered.filter(q => q.toLowerCase().includes(input.toLowerCase()));
+      }
+  
+      if (filtered.length > 0) {
+        return filtered[Math.floor(Math.random() * filtered.length)];
+      } else {
+        return "No matching quotes found.";
+      }
+    }
   </script>
+  
+
+<button onclick="runTests()">Run Tests</button>
+
+<script>
+  function runTests() {
+    console.log("▶ runTests() triggered");
+
+    fetch('golf_quotes.json')
+      .then(response => {
+        console.log("▶ Fetched JSON successfully");
+        return response.json();
+      })
+      .then(data => {
+        console.log("Test 1:", runQuoteTest(data, "random"));
+        console.log("Test 2:", runQuoteTest(data, "golfer", "Tiger Woods"));
+        console.log("Test 3:", runQuoteTest(data, "keyword", "dream"));
+        console.log("Test 4:", runQuoteTest(data, "keyword", "xyznotfound"));
+      })
+      .catch(err => {
+        console.error("❌ Fetch failed", err);
+      });
+  }
+</script>
+
+
+
+
 </body>
 </html>
