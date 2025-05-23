@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golf Quote Generator</title>
+<link rel="stylesheet" href="Style.css">
+</head>
+<body>
+  <h1>Golf Quote Generator</h1>
+
+  <div class="section">
+    <label><input type="radio" name="option" value="random" checked> Random</label><br>
+    <label><input type="radio" name="option" value="golfer"> Random by golfer</label>
+    <input type="text" id="golferName" placeholder="Enter golfer name" disabled><br>
+    <label><input type="radio" name="option" value="keyword"> Quote contains keyword</label>
+    <input type="text" id="keyword" placeholder="Enter keyword" disabled>
+  </div>
+
+  <div class="section">
+    <button onclick="generateQuote()">Generate Quote</button>
+  </div>
+
+  <div id="quoteDisplay" class="quote-box"></div>
+
+  <script>
+    let quotes = {};
+
+    fetch('golf_quotes.json')
+      .then(response => response.json())
+      .then(data => {
+        quotes = data;
+      })
+      .catch(error => {
+        document.getElementById("quoteDisplay").textContent = "Failed to load quotes.";
+        console.error("Error loading quotes:", error);
+      });
+
+    document.querySelectorAll('input[name="option"]').forEach((elem) => {
+      elem.addEventListener("change", () => {
+        document.getElementById("golferName").disabled = elem.value !== "golfer";
+        document.getElementById("keyword").disabled = elem.value !== "keyword";
+      });
+    });
+
+    function generateQuote() {
+      const option = document.querySelector('input[name="option"]:checked').value;
+      const golfer = document.getElementById("golferName").value.trim().toLowerCase();
+      const keyword = document.getElementById("keyword").value.trim().toLowerCase();
+      let filtered = Object.values(quotes);
+
+      if (option === "golfer") {
+        filtered = filtered.filter(q => q.toLowerCase().startsWith(golfer + ":"));
+      } else if (option === "keyword") {
+        filtered = filtered.filter(q => q.toLowerCase().includes(keyword));
+      }
+
+      const display = document.getElementById("quoteDisplay");
+      if (filtered.length > 0) {
+        const randomQuote = filtered[Math.floor(Math.random() * filtered.length)];
+        display.textContent = randomQuote;
+      } else {
+        display.textContent = "No matching quotes found.";
+      }
+    }
+  </script>
+</body>
+</html>
