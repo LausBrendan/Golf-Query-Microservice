@@ -62,11 +62,7 @@ Responses will be returned as JSON objects containing a single quote. If no matc
 ## UML Sequence Diagram
 
 
-Client -> Microservice: GET /quote?keyword=dream
-Microservice -> File System: Load golf_quotes.json
-File System -> Microservice: Return JSON data
-Microservice -> Microservice: Filter by keyword "dream"
-Microservice -> Client: Return quote JSON
+![UML sequence diagram](<UML sequence diagram.png>)
 
 
 ## Setup Process
