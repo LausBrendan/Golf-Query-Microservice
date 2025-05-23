@@ -14,23 +14,23 @@ Welcome to the Golf Quote Generator! This microservice provides golf quotes on r
 
 ---
 
-## 🔄 How to REQUEST Data
+## How to REQUEST Data
 
 Send a GET request to the microservice with one of the following patterns:
 
-### 🔹 Random Quote
+### Random Quote
 
 
 GET /quote
 
 
-### 🔹 Filter by Golfer Name
+### Filter by Golfer Name
 
 
 GET /quote?golfer=Tiger%20Woods
 
 
-### 🔹 Filter by Keyword
+### Filter by Keyword
 
 
 GET /quote?keyword=dream
